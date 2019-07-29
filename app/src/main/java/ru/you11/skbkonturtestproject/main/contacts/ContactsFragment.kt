@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_contacts.*
 import kotlinx.android.synthetic.main.fragment_contacts.view.*
@@ -18,11 +19,10 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-class ContactsFragment: BaseFragment<ContactsViewModel>() {
+class ContactsFragment: BaseFragment<ContactsViewModel>(), OnPersonClickListener {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_contacts, container, false)
-    }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+        inflater.inflate(R.layout.fragment_contacts, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -32,7 +32,12 @@ class ContactsFragment: BaseFragment<ContactsViewModel>() {
 
     private fun setupRV() {
         contactsRV.layoutManager = LinearLayoutManager(activity)
-        contactsRV.adapter = ContactsRVAdapter()
+        contactsRV.adapter = ContactsRVAdapter(this)
+    }
+
+    override fun onPersonClick(person: Person) {
+        val action = ContactsFragmentDirections.actionContactsFragmentToSingleContactFragment(person)
+        findNavController().navigate(action)
     }
 
     private fun setData() {

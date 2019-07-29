@@ -9,5 +9,21 @@
         android:id="@+id/contactsFragment"
         android:name="ru.you11.skbkonturtestproject.main.contacts.ContactsFragment"
         android:label="ContactsFragment"
-        tools:layout="@layout/fragment_contacts" />
+        tools:layout="@layout/fragment_contacts">
+        <action
+            android:id="@+id/action_contactsFragment_to_singleContactFragment"
+            app:destination="@id/singleContactFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/singleContactFragment"
+        android:name="ru.you11.skbkonturtestproject.main.singlecontact.SingleContactFragment"
+        android:label="SingleContactFragment"
+        tools:layout="@layout/fragment_single_contact" >
+
+        <argument
+            android:name="person"
+            app:argType="ru.you11.skbkonturtestproject.model.Person"
+            app:nullable="false" />
+    </fragment>
 </navigation>

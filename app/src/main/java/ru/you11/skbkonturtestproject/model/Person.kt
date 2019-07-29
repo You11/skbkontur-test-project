@@ -1,5 +1,9 @@
 package ru.you11.skbkonturtestproject.model
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
 data class Person(
     val id: String,
     val name: String,
@@ -7,5 +11,4 @@ data class Person(
     val biography: String,
     val temperament: Temperament,
     val educationPeriod: EducationPeriod
-) {
-}
+): Parcelable
