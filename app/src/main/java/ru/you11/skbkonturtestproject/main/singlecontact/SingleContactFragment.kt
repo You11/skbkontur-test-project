@@ -28,7 +28,7 @@ class SingleContactFragment : BaseFragment<SingleContactViewModel>() {
         singleContactBiography.text = person.biography
         singleContactEducation.text = person.educationPeriod.start.toString() + " - " + person.educationPeriod.end.toString()
         singleContactTemperament.text = person.temperament.ordinal.toString().capitalize()
-        singleContactPhone.text = person.id
+        singleContactPhone.text = person.phone
     }
 
     override fun createViewModel() = ViewModelProviders.of(this).get(SingleContactViewModel::class.java)

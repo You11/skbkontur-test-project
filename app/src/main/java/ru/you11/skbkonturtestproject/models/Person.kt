@@ -1,4 +1,4 @@
-package ru.you11.skbkonturtestproject.model
+package ru.you11.skbkonturtestproject.models
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
@@ -7,6 +7,7 @@ import kotlinx.android.parcel.Parcelize
 data class Person(
     val id: String,
     val name: String,
+    val phone: String,
     val height: Float,
     val biography: String,
     val temperament: Temperament,

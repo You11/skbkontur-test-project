@@ -1,4 +1,4 @@
-package ru.you11.skbkonturtestproject.model
+package ru.you11.skbkonturtestproject.models
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize

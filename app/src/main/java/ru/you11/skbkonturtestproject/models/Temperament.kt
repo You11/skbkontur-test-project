@@ -1,8 +1,9 @@
-package ru.you11.skbkonturtestproject.model
+package ru.you11.skbkonturtestproject.models
 
 enum class Temperament {
     MELANCHOLIC,
     PHLEGMATIC,
     SANGUINE,
-    CHOLERIC
+    CHOLERIC,
+    UNKNOWN
 }

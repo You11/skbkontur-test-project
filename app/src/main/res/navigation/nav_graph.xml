@@ -23,7 +23,7 @@
 
         <argument
             android:name="person"
-            app:argType="ru.you11.skbkonturtestproject.model.Person"
+            app:argType="ru.you11.skbkonturtestproject.models.Person"
             app:nullable="false" />
     </fragment>
 </navigation>

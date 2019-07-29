@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import ru.you11.skbkonturtestproject.R
-import ru.you11.skbkonturtestproject.model.Person
+import ru.you11.skbkonturtestproject.models.Person
 
 class ContactsRVAdapter(private val listener: OnPersonClickListener) : RecyclerView.Adapter<ContactsRVViewHolder>() {
 

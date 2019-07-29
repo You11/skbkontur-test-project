@@ -4,7 +4,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_contact.*
-import ru.you11.skbkonturtestproject.model.Person
+import ru.you11.skbkonturtestproject.models.Person
 
 class ContactsRVViewHolder(
     override val containerView: View,
@@ -21,7 +21,7 @@ class ContactsRVViewHolder(
         this.person = person
         contactName.text = person.name
         contactPhone.text = person.height.toString()
-        contactHeight.text = person.id //person id == phone number?
+        contactHeight.text = person.phone
     }
 }
 
