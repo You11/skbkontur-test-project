@@ -1,20 +1,17 @@
 package ru.you11.skbkonturtestproject.main.contacts
 
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_contacts.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import ru.you11.skbkonturtestproject.R
 import ru.you11.skbkonturtestproject.main.BaseFragment
 import ru.you11.skbkonturtestproject.models.Person
-import ru.you11.skbkonturtestproject.repository.Repository
 
 class ContactsFragment: BaseFragment<ContactsViewModel>(), OnPersonClickListener {
 
@@ -24,7 +21,7 @@ class ContactsFragment: BaseFragment<ContactsViewModel>(), OnPersonClickListener
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRV()
-        setData()
+        setupDataObserver()
     }
 
     private fun setupRV() {
@@ -37,21 +34,14 @@ class ContactsFragment: BaseFragment<ContactsViewModel>(), OnPersonClickListener
         findNavController().navigate(action)
     }
 
-    private fun setData() {
-        //TODO: Remove
-        val handler = Handler()
-        GlobalScope.launch {
-            val repository = Repository()
-            val persons = repository.getPersons()
-            handler.post {
-                (contactsRV.adapter as ContactsRVAdapter).updateData(persons)
-            }
-        }
+    private fun setupDataObserver() {
+        viewModel.persons.observe(this, Observer {
+            onDataUpdate(it)
+        })
+    }
 
-//        val persons = ArrayList<Person>()
-//        persons.add(Person("id", "name", "+7 (432) 563-53-12", 194.4f, "biography", Temperament.CHOLERIC, EducationPeriod(Date(0), Date(0))))
-//        persons.add(Person("id", "name", "+7 (432) 563-53-12", 194.4f, "biography", Temperament.CHOLERIC, EducationPeriod(Date(0), Date(0))))
-//        (contactsRV.adapter as ContactsRVAdapter).updateData(persons)
+    private fun onDataUpdate(data: List<Person>) {
+        (contactsRV.adapter as ContactsRVAdapter).updateData(data)
     }
 
     override fun createViewModel() = ViewModelProviders.of(this).get(ContactsViewModel::class.java)
