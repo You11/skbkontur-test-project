@@ -1,11 +1,11 @@
 package ru.you11.skbkonturtestproject.api.models
 
 import ru.you11.skbkonturtestproject.models.EducationPeriod
-import ru.you11.skbkonturtestproject.models.Person
+import ru.you11.skbkonturtestproject.models.Contact
 import ru.you11.skbkonturtestproject.models.Temperament
 import java.util.*
 
-class ApiPerson {
+class ApiContact {
     val id: String? = null
     val name: String? = null
     val phone: String? = null
@@ -20,19 +20,19 @@ class ApiPerson {
     }
 
     companion object {
-        fun convertToPersonList(apiPersons: List<ApiPerson>): List<Person> {
-            return apiPersons.map { convertToPerson(it) }
+        fun convertToPersonList(apiContacts: List<ApiContact>): List<Contact> {
+            return apiContacts.map { convertToPerson(it) }
         }
 
-        private fun convertToPerson(apiPerson: ApiPerson): Person {
-            return Person(
-                id = apiPerson.id ?: "",
-                name = apiPerson.name ?: "",
-                phone = apiPerson.phone ?: "",
-                height = apiPerson.height ?: 0.0f,
-                biography = apiPerson.biography ?: "",
-                temperament = Temperament.valueOf(apiPerson.temperament?.toUpperCase() ?: Temperament.UNKNOWN.name),
-                educationPeriod = convertToEducationPeriod(apiPerson.educationPeriod ?: ApiEducationPeriod())
+        private fun convertToPerson(apiContact: ApiContact): Contact {
+            return Contact(
+                id = apiContact.id ?: "",
+                name = apiContact.name ?: "",
+                phone = apiContact.phone ?: "",
+                height = apiContact.height ?: 0.0f,
+                biography = apiContact.biography ?: "",
+                temperament = Temperament.valueOf(apiContact.temperament?.toUpperCase() ?: Temperament.UNKNOWN.name),
+                educationPeriod = convertToEducationPeriod(apiContact.educationPeriod ?: ApiEducationPeriod())
             )
         }
 

@@ -1,8 +1,8 @@
 package ru.you11.skbkonturtestproject.api
 
-import ru.you11.skbkonturtestproject.api.models.ApiPerson
+import ru.you11.skbkonturtestproject.api.models.ApiContact
 
 interface IApiService {
 
-    fun getPersonsData(filename: String): CallResult<List<ApiPerson>>
+    fun getAllContacts(filename: String): CallResult<List<ApiContact>>
 }

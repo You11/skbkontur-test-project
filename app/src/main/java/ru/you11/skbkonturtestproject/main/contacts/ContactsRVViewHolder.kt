@@ -4,27 +4,27 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_contact.*
-import ru.you11.skbkonturtestproject.models.Person
+import ru.you11.skbkonturtestproject.models.Contact
 
 class ContactsRVViewHolder(
     override val containerView: View,
-    private val listener: OnPersonClickListener
+    private val listener: OnContactClickListener
 ) : RecyclerView.ViewHolder(containerView), LayoutContainer {
 
     init {
-        containerView.setOnClickListener { listener.onPersonClick(person) }
+        containerView.setOnClickListener { listener.onContactClick(contact) }
     }
 
-    private lateinit var person: Person
+    private lateinit var contact: Contact
 
-    fun bind(person: Person) {
-        this.person = person
-        contactName.text = person.name
-        contactPhone.text = person.height.toString()
-        contactHeight.text = person.phone
+    fun bind(contact: Contact) {
+        this.contact = contact
+        contactName.text = contact.name
+        contactPhone.text = contact.height.toString()
+        contactHeight.text = contact.phone
     }
 }
 
-interface OnPersonClickListener {
-    fun onPersonClick(person: Person)
+interface OnContactClickListener {
+    fun onContactClick(contact: Contact)
 }

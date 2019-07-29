@@ -11,9 +11,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_contacts.*
 import ru.you11.skbkonturtestproject.R
 import ru.you11.skbkonturtestproject.main.BaseFragment
-import ru.you11.skbkonturtestproject.models.Person
+import ru.you11.skbkonturtestproject.models.Contact
 
-class ContactsFragment: BaseFragment<ContactsViewModel>(), OnPersonClickListener {
+class ContactsFragment: BaseFragment<ContactsViewModel>(), OnContactClickListener {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
         inflater.inflate(R.layout.fragment_contacts, container, false)
@@ -29,18 +29,18 @@ class ContactsFragment: BaseFragment<ContactsViewModel>(), OnPersonClickListener
         contactsRV.adapter = ContactsRVAdapter(this)
     }
 
-    override fun onPersonClick(person: Person) {
-        val action = ContactsFragmentDirections.actionContactsFragmentToSingleContactFragment(person)
+    override fun onContactClick(contact: Contact) {
+        val action = ContactsFragmentDirections.actionContactsFragmentToSingleContactFragment(contact)
         findNavController().navigate(action)
     }
 
     private fun setupDataObserver() {
-        viewModel.persons.observe(this, Observer {
+        viewModel.contacts.observe(this, Observer {
             onDataUpdate(it)
         })
     }
 
-    private fun onDataUpdate(data: List<Person>) {
+    private fun onDataUpdate(data: List<Contact>) {
         (contactsRV.adapter as ContactsRVAdapter).updateData(data)
     }
 

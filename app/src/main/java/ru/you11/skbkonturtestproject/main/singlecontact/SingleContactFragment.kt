@@ -23,12 +23,12 @@ class SingleContactFragment : BaseFragment<SingleContactViewModel>() {
     }
 
     private fun setViewsData() {
-        val person = args.person
-        singleContactName.text = person.name
-        singleContactBiography.text = person.biography
-        singleContactEducation.text = person.educationPeriod.start.toString() + " - " + person.educationPeriod.end.toString()
-        singleContactTemperament.text = person.temperament.ordinal.toString().capitalize()
-        singleContactPhone.text = person.phone
+        val contact = args.contact
+        singleContactName.text = contact.name
+        singleContactBiography.text = contact.biography
+        singleContactEducation.text = contact.educationPeriod.start.toString() + " - " + contact.educationPeriod.end.toString()
+        singleContactTemperament.text = contact.temperament.ordinal.toString().capitalize()
+        singleContactPhone.text = contact.phone
     }
 
     override fun createViewModel() = ViewModelProviders.of(this).get(SingleContactViewModel::class.java)

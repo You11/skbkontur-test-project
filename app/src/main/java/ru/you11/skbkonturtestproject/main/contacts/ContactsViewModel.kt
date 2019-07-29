@@ -1,24 +1,22 @@
 package ru.you11.skbkonturtestproject.main.contacts
 
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import kotlinx.coroutines.launch
 import ru.you11.skbkonturtestproject.main.BaseViewModel
-import ru.you11.skbkonturtestproject.models.Person
+import ru.you11.skbkonturtestproject.models.Contact
 
 class ContactsViewModel: BaseViewModel() {
 
     init {
-        getAllPersons()
+        getAllContacts()
     }
 
-    val persons = MutableLiveData<List<Person>>()
+    val contacts = MutableLiveData<List<Contact>>()
 
-    private fun getAllPersons() {
+    private fun getAllContacts() {
         launch {
-            val data = repository.getPersons()
-            persons.postValue(data)
+            val data = repository.getContacts()
+            contacts.postValue(data)
         }
     }
 }

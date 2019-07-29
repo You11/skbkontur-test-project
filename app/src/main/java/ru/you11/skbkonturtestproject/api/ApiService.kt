@@ -1,12 +1,12 @@
 package ru.you11.skbkonturtestproject.api
 
 import retrofit2.Call
-import ru.you11.skbkonturtestproject.api.models.ApiPerson
+import ru.you11.skbkonturtestproject.api.models.ApiContact
 
 class ApiService(private val apiMethods: ApiMethods): IApiService {
 
-    override fun getPersonsData(filename: String): CallResult<List<ApiPerson>> {
-        return getApiResponse(apiMethods.getPersons(filename))
+    override fun getAllContacts(filename: String): CallResult<List<ApiContact>> {
+        return getApiResponse(apiMethods.getContacts(filename))
     }
 
     private fun <T> getApiResponse(call: Call<T>): CallResult<T> {

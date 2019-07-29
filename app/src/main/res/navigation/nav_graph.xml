@@ -22,8 +22,8 @@
         tools:layout="@layout/fragment_single_contact" >
 
         <argument
-            android:name="person"
-            app:argType="ru.you11.skbkonturtestproject.models.Person"
+            android:name="contact"
+            app:argType="ru.you11.skbkonturtestproject.models.Contact"
             app:nullable="false" />
     </fragment>
 </navigation>
