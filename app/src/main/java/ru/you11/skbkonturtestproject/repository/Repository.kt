@@ -10,11 +10,9 @@ class Repository {
 
     private val apiService = ApiService(RetrofitFactory().create().create(ApiMethods::class.java))
 
-    fun getContacts(): List<Contact> {
+    suspend fun getContacts(filename: String): List<Contact> {
         val contacts = ArrayList<Contact>()
-        contacts.addAll(ApiContact.convertToPersonList(apiService.getAllContacts("generated-01").data))
-        contacts.addAll(ApiContact.convertToPersonList(apiService.getAllContacts("generated-02").data))
-        contacts.addAll(ApiContact.convertToPersonList(apiService.getAllContacts("generated-03").data))
+        contacts.addAll(ApiContact.convertToPersonList(apiService.getAllContacts(filename).data))
         return contacts
     }
 }

@@ -1,18 +1,16 @@
 package ru.you11.skbkonturtestproject.api
 
-import retrofit2.Call
+import retrofit2.Response
 import ru.you11.skbkonturtestproject.api.models.ApiContact
 
 class ApiService(private val apiMethods: ApiMethods): IApiService {
 
-    override fun getAllContacts(filename: String): CallResult<List<ApiContact>> {
+    override suspend fun getAllContacts(filename: String): CallResult<List<ApiContact>> {
         return getApiResponse(apiMethods.getContacts(filename))
     }
 
-    private fun <T> getApiResponse(call: Call<T>): CallResult<T> {
+    private fun <T> getApiResponse(response: Response<T>): CallResult<T> {
         return try {
-            val response = call.execute()
-
             if (response.isSuccessful) {
                 val responseBody = response.body()
 

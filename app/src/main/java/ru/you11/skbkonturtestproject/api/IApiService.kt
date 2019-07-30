@@ -4,5 +4,5 @@ import ru.you11.skbkonturtestproject.api.models.ApiContact
 
 interface IApiService {
 
-    fun getAllContacts(filename: String): CallResult<List<ApiContact>>
+    suspend fun getAllContacts(filename: String): CallResult<List<ApiContact>>
 }
