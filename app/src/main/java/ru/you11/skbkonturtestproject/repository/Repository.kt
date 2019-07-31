@@ -40,6 +40,6 @@ class Repository(private val contactDao: ContactDao) {
     }
 
     private fun saveContactsToCache(contacts: List<ApiContact>) {
-        contactDao.insertAllContacts(ApiContact.convertToDbPersonList(contacts))
+        contactDao.insertAllContacts(ApiContact.convertToDbPersonList(contacts).take(Consts.Database.savedElementsCount))
     }
 }

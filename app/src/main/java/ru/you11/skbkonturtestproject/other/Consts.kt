@@ -7,4 +7,8 @@ object Consts {
 
         val filenames = listOf("generated-01", "generated-02", "generated-03")
     }
+
+    object Database {
+        const val savedElementsCount = 200
+    }
 }
