@@ -10,10 +10,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_contacts.*
 import ru.you11.skbkonturtestproject.R
+import ru.you11.skbkonturtestproject.main.LoadingStatus
 import ru.you11.skbkonturtestproject.main.base.BaseFragment
 import ru.you11.skbkonturtestproject.models.Contact
 
-class ContactsFragment: BaseFragment<ContactsViewModel>(), OnContactClickListener {
+class ContactsFragment : BaseFragment<ContactsViewModel>(), OnContactClickListener {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
         inflater.inflate(R.layout.fragment_contacts, container, false)
@@ -22,6 +23,8 @@ class ContactsFragment: BaseFragment<ContactsViewModel>(), OnContactClickListene
         super.onViewCreated(view, savedInstanceState)
         setupRV()
         setupDataObserver()
+        setupErrorObserver()
+        setupLoadingStatusObserver()
     }
 
     private fun setupRV() {
@@ -40,9 +43,40 @@ class ContactsFragment: BaseFragment<ContactsViewModel>(), OnContactClickListene
         })
     }
 
+    private fun setupErrorObserver() {
+        viewModel.error.observe(this, Observer {
+            onErrorUpdate(it)
+        })
+    }
+
+    private fun setupLoadingStatusObserver() {
+        viewModel.loadingStatus.observe(this, Observer {
+            onLoadingStatusUpdate(it)
+        })
+    }
+
     private fun onDataUpdate(data: List<Contact>) {
-        if (data.isEmpty()) return
         (contactsRV.adapter as ContactsRVAdapter).updateData(data)
+    }
+
+    private fun onErrorUpdate(error: String) {
+
+    }
+
+    private fun onLoadingStatusUpdate(loadingStatus: LoadingStatus) {
+        when (loadingStatus) {
+            LoadingStatus.EMPTY -> {
+
+            }
+
+            LoadingStatus.FINISHED -> {
+
+            }
+
+            LoadingStatus.LOADING -> {
+
+            }
+        }
     }
 
     override fun createViewModel() = ViewModelProviders.of(this).get(ContactsViewModel::class.java)
