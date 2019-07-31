@@ -33,8 +33,7 @@ class Repository(private val contactDao: ContactDao) {
 
         saveContactsToCache(apiContacts)
 
-        val contacts = ArrayList<Contact>()
-        contacts.addAll(ApiContact.convertToPersonList(apiContacts))
+        val contacts = ArrayList(ApiContact.convertToPersonList(apiContacts))
 
         return CallResult(contacts)
     }

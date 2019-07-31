@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_contacts.*
 import ru.you11.skbkonturtestproject.R
 import ru.you11.skbkonturtestproject.main.LoadingStatus
@@ -17,20 +18,41 @@ import ru.you11.skbkonturtestproject.models.Contact
 
 class ContactsFragment : BaseFragment<ContactsViewModel>(), OnContactClickListener {
 
+    private lateinit var errorSnackbar: Snackbar
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
         inflater.inflate(R.layout.fragment_contacts, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupViews()
+        setupObservers()
+    }
+
+    private fun setupViews() {
         setupRV()
-        setupDataObserver()
-        setupErrorObserver()
-        setupLoadingStatusObserver()
+        setupErrorSnackbar()
     }
 
     private fun setupRV() {
         contactsRV.layoutManager = LinearLayoutManager(activity)
         contactsRV.adapter = ContactsRVAdapter(this)
+    }
+
+    private fun setupErrorSnackbar() {
+        if (!::errorSnackbar.isInitialized) errorSnackbar = createErrorSnackbar()
+    }
+
+    private fun setupObservers() {
+        setupDataObserver()
+        setupErrorObserver()
+        setupLoadingStatusObserver()
+    }
+
+    private fun createErrorSnackbar(): Snackbar {
+        val view = view ?: contactsRootView
+
+        return Snackbar.make(view, "", Snackbar.LENGTH_INDEFINITE)
     }
 
     override fun onContactClick(contact: Contact) {
@@ -61,7 +83,13 @@ class ContactsFragment : BaseFragment<ContactsViewModel>(), OnContactClickListen
     }
 
     private fun onErrorUpdate(error: String) {
+        if (error.isEmpty()) {
+            errorSnackbar.dismiss()
+            return
+        }
 
+        errorSnackbar.setText(error)
+        errorSnackbar.show()
     }
 
     private fun onLoadingStatusUpdate(loadingStatus: LoadingStatus) {
