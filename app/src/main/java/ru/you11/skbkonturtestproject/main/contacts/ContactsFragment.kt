@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
@@ -70,13 +71,18 @@ class ContactsFragment : BaseFragment<ContactsViewModel>(), OnContactClickListen
             }
 
             LoadingStatus.FINISHED -> {
-
+                setContentVisibility(true)
             }
 
             LoadingStatus.LOADING -> {
-
+                setContentVisibility(false)
             }
         }
+    }
+
+    private fun setContentVisibility(isVisible: Boolean) {
+        contactsRV.isVisible = isVisible
+        contactsProgressBar.isVisible = !isVisible
     }
 
     override fun createViewModel() = ViewModelProviders.of(this).get(ContactsViewModel::class.java)
