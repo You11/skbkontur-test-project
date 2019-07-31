@@ -1,6 +1,7 @@
 package ru.you11.skbkonturtestproject.main.contacts
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,6 +33,7 @@ class ContactsFragment : BaseFragment<ContactsViewModel>(), OnContactClickListen
     private fun setupViews() {
         setupRV()
         setupErrorSnackbar()
+        setupSwipeToRefresh()
     }
 
     private fun setupRV() {
@@ -43,6 +45,15 @@ class ContactsFragment : BaseFragment<ContactsViewModel>(), OnContactClickListen
         if (!::errorSnackbar.isInitialized) errorSnackbar = createErrorSnackbar()
     }
 
+    private fun setupSwipeToRefresh() {
+        contactsSwipeRefresh.isEnabled = false
+        contactsSwipeRefresh.setOnRefreshListener {
+            if (viewModel.loadingStatus.value != LoadingStatus.LOADING) {
+                viewModel.updateData()
+            }
+        }
+    }
+
     private fun setupObservers() {
         setupDataObserver()
         setupErrorObserver()
@@ -50,9 +61,7 @@ class ContactsFragment : BaseFragment<ContactsViewModel>(), OnContactClickListen
     }
 
     private fun createErrorSnackbar(): Snackbar {
-        val view = view ?: contactsRootView
-
-        return Snackbar.make(view, "", Snackbar.LENGTH_INDEFINITE)
+        return Snackbar.make(view!!, "", Snackbar.LENGTH_INDEFINITE)
     }
 
     override fun onContactClick(contact: Contact) {
@@ -94,16 +103,23 @@ class ContactsFragment : BaseFragment<ContactsViewModel>(), OnContactClickListen
 
     private fun onLoadingStatusUpdate(loadingStatus: LoadingStatus) {
         when (loadingStatus) {
-            LoadingStatus.EMPTY -> {
 
+            LoadingStatus.LOADING -> {
+                if (isAdapterEmpty()) {
+                    setContentVisibility(false)
+                } else {
+                    contactsSwipeRefresh.isRefreshing = true
+                }
             }
 
             LoadingStatus.FINISHED -> {
                 setContentVisibility(true)
+                contactsSwipeRefresh.isEnabled = true
+                contactsSwipeRefresh.isRefreshing = false
             }
 
-            LoadingStatus.LOADING -> {
-                setContentVisibility(false)
+            LoadingStatus.EMPTY -> {
+
             }
         }
     }
@@ -112,6 +128,8 @@ class ContactsFragment : BaseFragment<ContactsViewModel>(), OnContactClickListen
         contactsRV.isVisible = isVisible
         contactsProgressBar.isVisible = !isVisible
     }
+
+    private fun isAdapterEmpty() = (contactsRV.adapter as ContactsRVAdapter).itemCount == 0
 
     override fun createViewModel() = ViewModelProviders.of(this).get(ContactsViewModel::class.java)
 }
