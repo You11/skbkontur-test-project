@@ -1,10 +1,10 @@
-package ru.you11.skbkonturtestproject.main
+package ru.you11.skbkonturtestproject.main.base
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 
-abstract class BaseFragment<T: ViewModel>: Fragment() {
+abstract class BaseFragment<T: BaseViewModel>: Fragment() {
 
     lateinit var viewModel: T
         private set

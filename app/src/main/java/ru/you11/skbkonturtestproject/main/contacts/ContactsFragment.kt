@@ -10,7 +10,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_contacts.*
 import ru.you11.skbkonturtestproject.R
-import ru.you11.skbkonturtestproject.main.BaseFragment
+import ru.you11.skbkonturtestproject.main.base.BaseFragment
 import ru.you11.skbkonturtestproject.models.Contact
 
 class ContactsFragment: BaseFragment<ContactsViewModel>(), OnContactClickListener {
@@ -41,6 +41,7 @@ class ContactsFragment: BaseFragment<ContactsViewModel>(), OnContactClickListene
     }
 
     private fun onDataUpdate(data: List<Contact>) {
+        if (data.isEmpty()) return
         (contactsRV.adapter as ContactsRVAdapter).updateData(data)
     }
 

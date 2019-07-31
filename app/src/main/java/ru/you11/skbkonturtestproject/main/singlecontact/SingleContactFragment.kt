@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.navArgs
 import kotlinx.android.synthetic.main.fragment_single_contact.*
 import ru.you11.skbkonturtestproject.R
-import ru.you11.skbkonturtestproject.main.BaseFragment
+import ru.you11.skbkonturtestproject.main.base.BaseFragment
 
 class SingleContactFragment : BaseFragment<SingleContactViewModel>() {
 
