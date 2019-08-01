@@ -19,6 +19,9 @@ import ru.you11.skbkonturtestproject.R
 import ru.you11.skbkonturtestproject.main.LoadingStatus
 import ru.you11.skbkonturtestproject.main.base.BaseFragment
 import ru.you11.skbkonturtestproject.models.Contact
+import androidx.recyclerview.widget.DividerItemDecoration
+
+
 
 class ContactsFragment : BaseFragment<ContactsViewModel>(), OnContactClickListener {
 
@@ -68,7 +71,11 @@ class ContactsFragment : BaseFragment<ContactsViewModel>(), OnContactClickListen
     }
 
     private fun setupRV() {
-        contactsRV.layoutManager = LinearLayoutManager(activity)
+        val layoutManager = LinearLayoutManager(activity)
+        val dividerItemDecoration = DividerItemDecoration(contactsRV.context, layoutManager.orientation)
+
+        contactsRV.layoutManager = layoutManager
+        contactsRV.addItemDecoration(dividerItemDecoration)
         contactsRV.adapter = ContactsRVAdapter(this)
     }
 
