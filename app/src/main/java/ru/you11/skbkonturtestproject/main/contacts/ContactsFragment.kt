@@ -1,13 +1,11 @@
 package ru.you11.skbkonturtestproject.main.contacts
 
-import android.app.SearchManager
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.Toast
 import androidx.appcompat.widget.SearchView
-import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.content.edit
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -20,6 +18,8 @@ import ru.you11.skbkonturtestproject.main.LoadingStatus
 import ru.you11.skbkonturtestproject.main.base.BaseFragment
 import ru.you11.skbkonturtestproject.models.Contact
 import androidx.recyclerview.widget.DividerItemDecoration
+import ru.you11.skbkonturtestproject.other.Consts
+import java.util.*
 
 
 class ContactsFragment : BaseFragment<ContactsViewModel>(), OnContactClickListener {
@@ -29,6 +29,14 @@ class ContactsFragment : BaseFragment<ContactsViewModel>(), OnContactClickListen
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+
+        if (isUpdateNeeded()) {
+            Log.d("meow", "update needed!")
+            viewModel.updateData()
+        } else {
+            Log.d("meow", "update not needed!")
+            viewModel.setCachedData()
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -139,6 +147,10 @@ class ContactsFragment : BaseFragment<ContactsViewModel>(), OnContactClickListen
     }
 
     private fun onLoadingStatusUpdate(loadingStatus: LoadingStatus) {
+        if (loadingStatus != LoadingStatus.LOADING) {
+            saveLastUpdateDatetime()
+        }
+
         when (loadingStatus) {
 
             LoadingStatus.LOADING -> {
@@ -159,6 +171,31 @@ class ContactsFragment : BaseFragment<ContactsViewModel>(), OnContactClickListen
 
             }
         }
+    }
+
+    private fun saveLastUpdateDatetime() {
+        val prefs = activity?.getSharedPreferences(Consts.Prefs.appPrefs, Context.MODE_PRIVATE)
+        prefs?.edit {
+            val time = Date().time
+            putLong(Consts.Prefs.appPrefsLastUpdate, time)
+            Log.d("meow", "saved! $time")
+            apply()
+        }
+    }
+
+    private fun getLastUpdateDatetime(): Long? {
+        val prefs = activity?.getSharedPreferences(Consts.Prefs.appPrefs, Context.MODE_PRIVATE)
+        val lastUpdateTime = prefs?.getLong(Consts.Prefs.appPrefsLastUpdate, 0)
+        return if (lastUpdateTime == 0L) null else lastUpdateTime
+    }
+
+    private fun isUpdateNeeded(): Boolean {
+        val lastVisitTime = getLastUpdateDatetime() ?: return true
+        val timeDiffForUpdateInMillis = 60000L
+        val currentTime = Date().time
+        Log.d("meow", "saved time: $lastVisitTime")
+        Log.d("meow", "current time: $currentTime")
+        return (lastVisitTime + timeDiffForUpdateInMillis) < currentTime
     }
 
     private fun setContentVisibility(isVisible: Boolean) {

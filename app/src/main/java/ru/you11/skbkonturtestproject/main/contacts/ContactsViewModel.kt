@@ -10,39 +10,30 @@ import ru.you11.skbkonturtestproject.models.Contact
 
 class ContactsViewModel(application: Application) : BaseViewModel(application) {
 
-    init {
-        launch {
-            setCachedData()
-            updateAllContacts()
-        }
-    }
-
     val contacts = MutableLiveData<List<Contact>>()
     val loadingStatus = MutableLiveData<LoadingStatus>()
     val error = MutableLiveData<String>()
 
     fun updateData() {
         launch {
-            updateAllContacts()
+            loadingStatus.postValue(LoadingStatus.LOADING)
+            val data = repository.getContacts()
+            if (loadingStatus.value != LoadingStatus.FINISHED) loadingStatus.postValue(LoadingStatus.FINISHED)
+            if (data.isSuccess) {
+                error.postValue("")
+                contacts.postValue(data.data)
+            } else {
+                error.postValue(data.error)
+            }
         }
     }
 
-    private fun updateAllContacts() {
-        loadingStatus.postValue(LoadingStatus.LOADING)
-        val data = repository.getContacts()
-        if (loadingStatus.value != LoadingStatus.FINISHED) loadingStatus.postValue(LoadingStatus.FINISHED)
-        if (data.isSuccess) {
-            error.postValue("")
-            contacts.postValue(data.data)
-        } else {
-            error.postValue(data.error)
-        }
-    }
-
-    private fun setCachedData() {
-        val cachedData = repository.getContactsFromCache()
-        if (cachedData.isNotEmpty()) {
-            contacts.postValue(repository.getContactsFromCache())
+    fun setCachedData() {
+        launch {
+            val cachedData = repository.getContactsFromCache()
+            if (cachedData.isNotEmpty()) {
+                contacts.postValue(cachedData)
+            }
         }
     }
 

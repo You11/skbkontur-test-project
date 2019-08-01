@@ -11,4 +11,9 @@ object Consts {
     object Database {
         const val savedElementsCount = 200
     }
+
+    object Prefs {
+        const val appPrefs = "prefs"
+        const val appPrefsLastUpdate = "update"
+    }
 }
