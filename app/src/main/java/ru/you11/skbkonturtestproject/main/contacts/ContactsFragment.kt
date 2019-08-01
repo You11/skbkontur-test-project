@@ -22,7 +22,6 @@ import ru.you11.skbkonturtestproject.models.Contact
 import androidx.recyclerview.widget.DividerItemDecoration
 
 
-
 class ContactsFragment : BaseFragment<ContactsViewModel>(), OnContactClickListener {
 
     private lateinit var errorSnackbar: Snackbar

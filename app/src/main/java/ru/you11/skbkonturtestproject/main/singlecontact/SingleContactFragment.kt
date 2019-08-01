@@ -9,6 +9,9 @@ import androidx.navigation.fragment.navArgs
 import kotlinx.android.synthetic.main.fragment_single_contact.*
 import ru.you11.skbkonturtestproject.R
 import ru.you11.skbkonturtestproject.main.base.BaseFragment
+import android.content.Intent
+import android.net.Uri
+
 
 class SingleContactFragment : BaseFragment<SingleContactViewModel>() {
 
@@ -29,6 +32,15 @@ class SingleContactFragment : BaseFragment<SingleContactViewModel>() {
         singleContactEducation.text = contact.educationPeriod.start.toString() + " - " + contact.educationPeriod.end.toString()
         singleContactTemperament.text = contact.temperament.ordinal.toString().capitalize()
         singleContactPhone.text = contact.phone
+
+        singleContactPhone.setOnClickListener {
+            dialPhone(contact.phone)
+        }
+    }
+
+    private fun dialPhone(phoneNumber: String) {
+        val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$phoneNumber"))
+        startActivity(intent)
     }
 
     override fun createViewModel() = ViewModelProviders.of(this).get(SingleContactViewModel::class.java)
