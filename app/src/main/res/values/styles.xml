@@ -6,6 +6,19 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="android:textColor">@color/blackText</item>
     </style>
 
+    <style name="HeaderText">
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Large</item>
+    </style>
+
+    <style name="GrayText">
+        <item name="android:textColor">@color/grayText</item>
+    </style>
+
+    <style name="ClickableText">
+        <item name="android:textColor">@color/clickableText</item>
+    </style>
 </resources>
