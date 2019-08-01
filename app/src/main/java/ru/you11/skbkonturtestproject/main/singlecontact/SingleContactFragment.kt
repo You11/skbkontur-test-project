@@ -11,6 +11,10 @@ import ru.you11.skbkonturtestproject.R
 import ru.you11.skbkonturtestproject.main.base.BaseFragment
 import android.content.Intent
 import android.net.Uri
+import androidx.lifecycle.Observer
+import ru.you11.skbkonturtestproject.models.Contact
+import ru.you11.skbkonturtestproject.other.DateUtils
+import java.util.*
 
 
 class SingleContactFragment : BaseFragment<SingleContactViewModel>() {
@@ -22,20 +26,26 @@ class SingleContactFragment : BaseFragment<SingleContactViewModel>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setViewsData()
-    }
 
-    private fun setViewsData() {
-        val contact = args.contact
-        singleContactName.text = contact.name
-        singleContactBiography.text = contact.biography
-        singleContactEducation.text = contact.educationPeriod.start.toString() + " - " + contact.educationPeriod.end.toString()
-        singleContactTemperament.text = contact.temperament.ordinal.toString().capitalize()
-        singleContactPhone.text = contact.phone
+        viewModel.setContactData(args.contact)
+        viewModel.contact.observe(this, Observer {
+            setViewsData(it)
+        })
 
         singleContactPhone.setOnClickListener {
-            dialPhone(contact.phone)
+            dialPhone(viewModel.getContactPhone())
         }
+    }
+
+    private fun setViewsData(contact: Contact) {
+        singleContactName.text = contact.name
+        singleContactBiography.text = contact.biography
+        singleContactEducation.text = createFormattedDateString(
+            contact.educationPeriod.start,
+            contact.educationPeriod.end
+        )
+        singleContactTemperament.text = contact.temperament.toString().toLowerCase().capitalize()
+        singleContactPhone.text = contact.phone
     }
 
     private fun dialPhone(phoneNumber: String) {
@@ -44,4 +54,12 @@ class SingleContactFragment : BaseFragment<SingleContactViewModel>() {
     }
 
     override fun createViewModel() = ViewModelProviders.of(this).get(SingleContactViewModel::class.java)
+
+    private fun createFormattedDateString(startDate: Date, endDate: Date): String {
+        return resources.getString(
+            R.string.two_dates,
+            DateUtils.formatDayMonthYear.format(startDate),
+            DateUtils.formatDayMonthYear.format(endDate)
+        )
+    }
 }

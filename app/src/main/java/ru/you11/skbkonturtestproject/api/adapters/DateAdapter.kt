@@ -2,6 +2,7 @@ package ru.you11.skbkonturtestproject.api.adapters
 
 import com.squareup.moshi.FromJson
 import com.squareup.moshi.ToJson
+import ru.you11.skbkonturtestproject.other.DateUtils
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -9,28 +10,19 @@ class DateAdapter {
 
     @ToJson
     fun toJson(date: Date): String {
-        return getDateFormat().format(date)
+        return DateUtils.fullApiDateFormat.format(date)
     }
 
     @FromJson
     fun fromJson(jsonDate: String?): Date {
         if (jsonDate.isNullOrBlank()) {
-            return createEmptyDate()
+            return DateUtils.createEmptyDate()
         }
 
         return try {
-            getDateFormat().parse(jsonDate)
+            DateUtils.fullApiDateFormat.parse(jsonDate)
         } catch (e: Exception) {
-            createEmptyDate()
+            DateUtils.createEmptyDate()
         }
-    }
-
-    //TODO: refactor later
-    private fun getDateFormat() = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US)
-
-    private fun createEmptyDate(): Date {
-        val cal = Calendar.getInstance()
-        cal.set(1900, 0, 1)
-        return cal.time
     }
 }
