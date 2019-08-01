@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">SkbKonturTestProject</string>
+
+    <string name="search_view_hint">Поиск</string>
 </resources>

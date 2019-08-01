@@ -28,7 +28,6 @@ class ContactsViewModel(application: Application) : BaseViewModel(application) {
     }
 
     private fun updateAllContacts() {
-        Log.d("meow", "meow2")
         loadingStatus.postValue(LoadingStatus.LOADING)
         val data = repository.getContacts()
         if (loadingStatus.value != LoadingStatus.FINISHED) loadingStatus.postValue(LoadingStatus.FINISHED)
@@ -41,10 +40,13 @@ class ContactsViewModel(application: Application) : BaseViewModel(application) {
     }
 
     private fun setCachedData() {
-        Log.d("meow", "meow1")
         val cachedData = repository.getContactsFromCache()
         if (cachedData.isNotEmpty()) {
             contacts.postValue(repository.getContactsFromCache())
         }
+    }
+
+    fun getSearchedContacts(searchString: String): List<Contact>? {
+        return contacts.value?.filter { it.name.startsWith(searchString) }
     }
 }

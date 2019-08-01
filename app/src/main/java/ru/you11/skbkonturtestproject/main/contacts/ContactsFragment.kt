@@ -1,10 +1,13 @@
 package ru.you11.skbkonturtestproject.main.contacts
 
+import android.app.SearchManager
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.Toast
+import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -21,6 +24,11 @@ class ContactsFragment : BaseFragment<ContactsViewModel>(), OnContactClickListen
 
     private lateinit var errorSnackbar: Snackbar
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
         inflater.inflate(R.layout.fragment_contacts, container, false)
 
@@ -28,6 +36,29 @@ class ContactsFragment : BaseFragment<ContactsViewModel>(), OnContactClickListen
         super.onViewCreated(view, savedInstanceState)
         setupViews()
         setupObservers()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_contacts, menu)
+        setupSearchView(menu)
+    }
+
+    private fun setupSearchView(menu: Menu) {
+        (menu.findItem(R.id.search).actionView as SearchView).apply {
+            queryHint = resources.getString(R.string.search_view_hint)
+            setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    if (newText == null) return false
+                    val searchedResult = viewModel.getSearchedContacts(newText) ?: return false
+                    (contactsRV.adapter as ContactsRVAdapter).updateData(searchedResult)
+                    return true
+                }
+
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    return true
+                }
+            })
+        }
     }
 
     private fun setupViews() {

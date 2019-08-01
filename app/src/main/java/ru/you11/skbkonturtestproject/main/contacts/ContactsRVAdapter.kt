@@ -11,9 +11,7 @@ class ContactsRVAdapter(private val listener: OnContactClickListener) : Recycler
     private val contacts = ArrayList<Contact>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ContactsRVViewHolder(
-        LayoutInflater.from(parent.context).inflate(
-            R.layout.item_contact, parent, false
-        ),
+        LayoutInflater.from(parent.context).inflate(R.layout.item_contact, parent, false),
         listener
     )
 
