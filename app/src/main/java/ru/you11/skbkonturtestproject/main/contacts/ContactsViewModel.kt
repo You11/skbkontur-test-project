@@ -42,7 +42,7 @@ class ContactsViewModel(application: Application) : BaseViewModel(application) {
     }
 
     fun getSearchedContacts(searchString: String): List<Contact>? {
-        return contacts.value?.filter { it.name.startsWith(searchString) }
+        return contacts.value?.filter { it.name.contains(searchString, true) }
     }
 
     fun isDataEmpty() = contacts.value?.isEmpty() ?: true
