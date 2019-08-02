@@ -17,16 +17,22 @@ class ContactsViewModel(application: Application) : BaseViewModel(application) {
 
     fun updateData() {
         launch {
-            setNewData()
-        }
-    }
+            loadingStatus.postValue(LoadingStatus.LOADING)
+            val data = repository.getContacts()
+            if (data.isSuccess) {
 
-    fun updateData(lastUpdateTimeInMillis: Long) {
-        launch {
-            if (isUpdateNeeded(lastUpdateTimeInMillis)) {
-                setNewData()
+                if (!data.isCached) {
+                    launch {
+                        repository.saveContactsToCache(data.data)
+                    }
+                }
+
+                clearError()
+                loadingStatus.postValue(LoadingStatus.FINISHED)
+                contacts.postValue(data.data)
             } else {
-                setCachedData()
+                loadingStatus.postValue(LoadingStatus.ERROR)
+                error.postValue(data.error)
             }
         }
     }
@@ -36,41 +42,6 @@ class ContactsViewModel(application: Application) : BaseViewModel(application) {
     }
 
     fun isDataEmpty() = contacts.value?.isEmpty() ?: true
-
-    private fun setNewData() {
-        loadingStatus.postValue(LoadingStatus.LOADING)
-        val data = repository.getContacts(getCached = false)
-        if (data.isSuccess) {
-            launch {
-                repository.saveContactsToCache(data.data)
-            }
-
-            clearError()
-            loadingStatus.postValue(LoadingStatus.FINISHED)
-            contacts.postValue(data.data)
-        } else {
-            loadingStatus.postValue(LoadingStatus.ERROR)
-            error.postValue(data.error)
-        }
-    }
-
-    private fun setCachedData() {
-        launch {
-            val cachedData = repository.getContacts(getCached = true)
-            if (cachedData.data.isNotEmpty()) {
-                loadingStatus.postValue(LoadingStatus.FINISHED)
-                contacts.postValue(cachedData.data)
-            } else {
-                loadingStatus.postValue(LoadingStatus.ERROR)
-            }
-        }
-    }
-
-    private fun isUpdateNeeded(lastUpdateTimeInMillis: Long): Boolean {
-        val timeDiffForUpdateInMillis = Consts.Network.timeDiffForUpdateInMillis
-        val currentTime = Date().time
-        return (lastUpdateTimeInMillis + timeDiffForUpdateInMillis) < currentTime
-    }
 
     private fun clearError() {
         error.postValue("")

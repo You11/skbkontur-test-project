@@ -29,12 +29,7 @@ class ContactsFragment : BaseFragment<ContactsViewModel>(), OnContactClickListen
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        val lastUpdateTime = getLastUpdateDatetime()
-        if (lastUpdateTime == null) {
-            viewModel.updateData()
-        } else {
-            viewModel.updateData(lastUpdateTime)
-        }
+        viewModel.updateData()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -167,34 +162,17 @@ class ContactsFragment : BaseFragment<ContactsViewModel>(), OnContactClickListen
             }
 
             LoadingStatus.FINISHED -> {
-                saveLastUpdateDatetime()
                 setOnlyThisViewVisible(contactsRV)
             }
 
             LoadingStatus.EMPTY -> {
                 setOnlyThisViewVisible(contactsEmptyView)
-                saveLastUpdateDatetime()
             }
 
             LoadingStatus.ERROR -> {
                 if (viewModel.isDataEmpty()) setOnlyThisViewVisible(contactsEmptyView)
             }
         }
-    }
-
-    private fun saveLastUpdateDatetime() {
-        val prefs = activity?.getSharedPreferences(Consts.Prefs.contactsPrefs, Context.MODE_PRIVATE)
-        prefs?.edit {
-            val time = Date().time
-            putLong(Consts.Prefs.contactsPrefsLastUpdate, time)
-            apply()
-        }
-    }
-
-    private fun getLastUpdateDatetime(): Long? {
-        val prefs = activity?.getSharedPreferences(Consts.Prefs.contactsPrefs, Context.MODE_PRIVATE)
-        val lastUpdateTime = prefs?.getLong(Consts.Prefs.contactsPrefsLastUpdate, 0)
-        return if (lastUpdateTime == 0L) null else lastUpdateTime
     }
 
     private fun setOnlyThisViewVisible(view: View) {

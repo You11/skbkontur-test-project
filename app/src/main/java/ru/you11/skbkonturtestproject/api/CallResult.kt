@@ -16,4 +16,5 @@ class CallResult<T> {
     val isSuccess get() = mError == null
     val data get() = mData!!
     val error get() = mError ?: ""
+    var isCached = false
 }

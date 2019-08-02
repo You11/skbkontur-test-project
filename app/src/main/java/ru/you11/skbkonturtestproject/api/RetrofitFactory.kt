@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit
 
 class RetrofitFactory {
 
-    private val baseUrl = "https://raw.githubusercontent.com/SkbkonturMobile/mobile-test-droid/master/json/"
+    private val baseUrl = Consts.Network.baseUrl
 
     fun create(): Retrofit {
 
