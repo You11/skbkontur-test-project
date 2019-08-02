@@ -3,4 +3,6 @@
 
     <string name="search_view_hint">Поиск</string>
     <string name="two_dates">%1$s - %2$s</string>
+    <string name="empty_message">Контакты не найдены</string>
+    <string name="error_message">Ошибка при загрузке контактов</string>
 </resources>

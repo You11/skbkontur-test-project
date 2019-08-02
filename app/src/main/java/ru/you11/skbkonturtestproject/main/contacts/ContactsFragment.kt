@@ -2,7 +2,6 @@ package ru.you11.skbkonturtestproject.main.contacts
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.edit
@@ -31,10 +30,8 @@ class ContactsFragment : BaseFragment<ContactsViewModel>(), OnContactClickListen
         setHasOptionsMenu(true)
 
         if (isUpdateNeeded()) {
-            Log.d("meow", "update needed!")
             viewModel.updateData()
         } else {
-            Log.d("meow", "update not needed!")
             viewModel.setCachedData()
         }
     }
@@ -60,12 +57,21 @@ class ContactsFragment : BaseFragment<ContactsViewModel>(), OnContactClickListen
                 override fun onQueryTextChange(newText: String?): Boolean {
                     if (newText == null) return false
                     val searchedResult = viewModel.getSearchedContacts(newText) ?: return false
+                    manageViewsVisibilityAfterSearch(searchedResult)
                     (contactsRV.adapter as ContactsRVAdapter).updateData(searchedResult)
                     return true
                 }
 
                 override fun onQueryTextSubmit(query: String?): Boolean {
                     return true
+                }
+
+                private fun manageViewsVisibilityAfterSearch(searchedResult: List<Contact>) {
+                    if (searchedResult.isEmpty() && !contactsEmptyView.isVisible) {
+                        setOnlyThisViewVisible(contactsEmptyView)
+                    } else if (searchedResult.isNotEmpty() && contactsEmptyView.isVisible) {
+                        setOnlyThisViewVisible(contactsRV)
+                    }
                 }
             })
         }
@@ -147,27 +153,30 @@ class ContactsFragment : BaseFragment<ContactsViewModel>(), OnContactClickListen
     }
 
     private fun onLoadingStatusUpdate(loadingStatus: LoadingStatus) {
-        when (loadingStatus) {
 
+        if (!contactsSwipeRefresh.isEnabled) contactsSwipeRefresh.isEnabled = true
+
+        if (loadingStatus != LoadingStatus.LOADING) {
+            contactsSwipeRefresh.isRefreshing = false
+        }
+
+        when (loadingStatus) {
             LoadingStatus.LOADING -> {
-                if (!contactsSwipeRefresh.isRefreshing) setContentVisibility(false)
+                if (!contactsSwipeRefresh.isRefreshing) setOnlyThisViewVisible(contactsProgressBar)
             }
 
             LoadingStatus.FINISHED -> {
                 saveLastUpdateDatetime()
-                setContentVisibility(true)
-                contactsSwipeRefresh.isEnabled = true
-                contactsSwipeRefresh.isRefreshing = false
+                setOnlyThisViewVisible(contactsRV)
             }
 
             LoadingStatus.EMPTY -> {
+                setOnlyThisViewVisible(contactsEmptyView)
                 saveLastUpdateDatetime()
             }
 
             LoadingStatus.ERROR -> {
-                setContentVisibility(true)
-                contactsSwipeRefresh.isEnabled = true
-                contactsSwipeRefresh.isRefreshing = false
+                if (viewModel.isDataEmpty()) setOnlyThisViewVisible(contactsEmptyView)
             }
         }
     }
@@ -177,7 +186,6 @@ class ContactsFragment : BaseFragment<ContactsViewModel>(), OnContactClickListen
         prefs?.edit {
             val time = Date().time
             putLong(Consts.Prefs.contactsPrefsLastUpdate, time)
-            Log.d("meow", "saved! $time")
             apply()
         }
     }
@@ -192,17 +200,17 @@ class ContactsFragment : BaseFragment<ContactsViewModel>(), OnContactClickListen
         val lastVisitTime = getLastUpdateDatetime() ?: return true
         val timeDiffForUpdateInMillis = Consts.Network.timeDiffForUpdateInMillis
         val currentTime = Date().time
-        Log.d("meow", "saved time: $lastVisitTime")
-        Log.d("meow", "current time: $currentTime")
         return (lastVisitTime + timeDiffForUpdateInMillis) < currentTime
     }
 
-    private fun setContentVisibility(isVisible: Boolean) {
-        contactsRV.isVisible = isVisible
-        contactsProgressBar.isVisible = !isVisible
-    }
+    private fun setOnlyThisViewVisible(view: View) {
+        val parent = view.parent as ViewGroup
+        for (el in 0 until parent.childCount) {
+            parent.getChildAt(el).visibility = View.GONE
+        }
 
-    private fun isAdapterEmpty() = (contactsRV.adapter as ContactsRVAdapter).itemCount == 0
+        view.visibility = View.VISIBLE
+    }
 
     override fun createViewModel() = ViewModelProviders.of(this).get(ContactsViewModel::class.java)
 }

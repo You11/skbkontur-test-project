@@ -33,7 +33,10 @@ class ContactsViewModel(application: Application) : BaseViewModel(application) {
         launch {
             val cachedData = repository.getContactsFromCache()
             if (cachedData.isNotEmpty()) {
+                loadingStatus.postValue(LoadingStatus.FINISHED)
                 contacts.postValue(cachedData)
+            } else {
+                loadingStatus.postValue(LoadingStatus.ERROR)
             }
         }
     }
@@ -41,4 +44,6 @@ class ContactsViewModel(application: Application) : BaseViewModel(application) {
     fun getSearchedContacts(searchString: String): List<Contact>? {
         return contacts.value?.filter { it.name.startsWith(searchString) }
     }
+
+    fun isDataEmpty() = contacts.value?.isEmpty() ?: true
 }
