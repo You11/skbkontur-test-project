@@ -38,7 +38,9 @@ class ContactsViewModel(application: Application) : BaseViewModel(application) {
     }
 
     fun getSearchedContacts(searchString: String): List<Contact>? {
-        return contacts.value?.filter { it.name.contains(searchString, true) }
+        return contacts.value?.filter {
+            it.name.contains(searchString, true) || it.phone.filter { phone -> phone.isDigit() }.contains(searchString)
+        }
     }
 
     fun isDataEmpty() = contacts.value?.isEmpty() ?: true
