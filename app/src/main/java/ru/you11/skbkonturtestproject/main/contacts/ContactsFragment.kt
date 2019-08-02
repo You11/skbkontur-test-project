@@ -1,10 +1,8 @@
 package ru.you11.skbkonturtestproject.main.contacts
 
-import android.content.Context
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
-import androidx.core.content.edit
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -17,8 +15,6 @@ import ru.you11.skbkonturtestproject.main.LoadingStatus
 import ru.you11.skbkonturtestproject.main.base.BaseFragment
 import ru.you11.skbkonturtestproject.models.Contact
 import androidx.recyclerview.widget.DividerItemDecoration
-import ru.you11.skbkonturtestproject.other.Consts
-import java.util.*
 
 
 class ContactsFragment : BaseFragment<ContactsViewModel>(), OnContactClickListener {
@@ -29,7 +25,7 @@ class ContactsFragment : BaseFragment<ContactsViewModel>(), OnContactClickListen
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        viewModel.updateData()
+        viewModel.setData()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -96,7 +92,7 @@ class ContactsFragment : BaseFragment<ContactsViewModel>(), OnContactClickListen
         contactsSwipeRefresh.isEnabled = false
         contactsSwipeRefresh.setOnRefreshListener {
             if (viewModel.loadingStatus.value != LoadingStatus.LOADING) {
-                viewModel.updateData()
+                viewModel.setData(requestNew = true)
             }
         }
     }

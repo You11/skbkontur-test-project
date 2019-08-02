@@ -19,6 +19,8 @@ class ApiService(private val apiMethods: ApiMethods): IApiService {
 
     private fun <T> getApiResponse(call: Call<T>): CallResult<T> {
         return try {
+            if (!isConnectedToInternet()) return CallResult(resources.getString(R.string.not_connected_error))
+
             val response = call.execute()
 
             if (response.isSuccessful) {
@@ -31,9 +33,6 @@ class ApiService(private val apiMethods: ApiMethods): IApiService {
                 CallResult(getErrorMessageBasedOnCode(response.code()))
             }
         } catch (e: Exception) {
-            if (!isConnectedToInternet())
-                return CallResult(resources.getString(R.string.not_connected_error))
-
             return CallResult(resources.getString(R.string.general_error))
         }
     }

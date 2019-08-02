@@ -6,8 +6,6 @@ import kotlinx.coroutines.launch
 import ru.you11.skbkonturtestproject.main.LoadingStatus
 import ru.you11.skbkonturtestproject.main.base.BaseViewModel
 import ru.you11.skbkonturtestproject.models.Contact
-import ru.you11.skbkonturtestproject.other.Consts
-import java.util.*
 
 class ContactsViewModel(application: Application) : BaseViewModel(application) {
 
@@ -15,10 +13,10 @@ class ContactsViewModel(application: Application) : BaseViewModel(application) {
     val loadingStatus = MutableLiveData<LoadingStatus>()
     val error = MutableLiveData<String>()
 
-    fun updateData() {
+    fun setData(requestNew: Boolean = false) {
         launch {
             loadingStatus.postValue(LoadingStatus.LOADING)
-            val data = repository.getContacts()
+            val data = repository.getContacts(requestNew)
             if (data.isSuccess) {
 
                 if (!data.isCached) {

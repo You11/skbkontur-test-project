@@ -20,9 +20,9 @@ class Repository(private val contactDao: ContactDao) {
 
     private val apiService = ApiService(RetrofitFactory().create().create(ApiMethods::class.java))
 
-    fun getContacts(): CallResult<List<Contact>> {
+    fun getContacts(requestNew: Boolean): CallResult<List<Contact>> {
 
-        if (!isUpdateNeeded()) {
+        if (!isUpdateNeeded() && !requestNew) {
             return getCachedContacts()
         }
 
