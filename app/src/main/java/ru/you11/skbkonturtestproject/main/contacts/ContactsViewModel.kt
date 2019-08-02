@@ -18,11 +18,12 @@ class ContactsViewModel(application: Application) : BaseViewModel(application) {
         launch {
             loadingStatus.postValue(LoadingStatus.LOADING)
             val data = repository.getContacts()
-            if (loadingStatus.value != LoadingStatus.FINISHED) loadingStatus.postValue(LoadingStatus.FINISHED)
             if (data.isSuccess) {
+                loadingStatus.postValue(LoadingStatus.FINISHED)
                 error.postValue("")
                 contacts.postValue(data.data)
             } else {
+                loadingStatus.postValue(LoadingStatus.ERROR)
                 error.postValue(data.error)
             }
         }

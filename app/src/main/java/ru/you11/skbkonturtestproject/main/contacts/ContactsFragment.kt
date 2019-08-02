@@ -147,51 +147,50 @@ class ContactsFragment : BaseFragment<ContactsViewModel>(), OnContactClickListen
     }
 
     private fun onLoadingStatusUpdate(loadingStatus: LoadingStatus) {
-        if (loadingStatus != LoadingStatus.LOADING) {
-            saveLastUpdateDatetime()
-        }
-
         when (loadingStatus) {
 
             LoadingStatus.LOADING -> {
-                if (isAdapterEmpty()) {
-                    setContentVisibility(false)
-                } else {
-                    contactsSwipeRefresh.isRefreshing = true
-                }
+                if (!contactsSwipeRefresh.isRefreshing) setContentVisibility(false)
             }
 
             LoadingStatus.FINISHED -> {
+                saveLastUpdateDatetime()
                 setContentVisibility(true)
                 contactsSwipeRefresh.isEnabled = true
                 contactsSwipeRefresh.isRefreshing = false
             }
 
             LoadingStatus.EMPTY -> {
+                saveLastUpdateDatetime()
+            }
 
+            LoadingStatus.ERROR -> {
+                setContentVisibility(true)
+                contactsSwipeRefresh.isEnabled = true
+                contactsSwipeRefresh.isRefreshing = false
             }
         }
     }
 
     private fun saveLastUpdateDatetime() {
-        val prefs = activity?.getSharedPreferences(Consts.Prefs.appPrefs, Context.MODE_PRIVATE)
+        val prefs = activity?.getSharedPreferences(Consts.Prefs.contactsPrefs, Context.MODE_PRIVATE)
         prefs?.edit {
             val time = Date().time
-            putLong(Consts.Prefs.appPrefsLastUpdate, time)
+            putLong(Consts.Prefs.contactsPrefsLastUpdate, time)
             Log.d("meow", "saved! $time")
             apply()
         }
     }
 
     private fun getLastUpdateDatetime(): Long? {
-        val prefs = activity?.getSharedPreferences(Consts.Prefs.appPrefs, Context.MODE_PRIVATE)
-        val lastUpdateTime = prefs?.getLong(Consts.Prefs.appPrefsLastUpdate, 0)
+        val prefs = activity?.getSharedPreferences(Consts.Prefs.contactsPrefs, Context.MODE_PRIVATE)
+        val lastUpdateTime = prefs?.getLong(Consts.Prefs.contactsPrefsLastUpdate, 0)
         return if (lastUpdateTime == 0L) null else lastUpdateTime
     }
 
     private fun isUpdateNeeded(): Boolean {
         val lastVisitTime = getLastUpdateDatetime() ?: return true
-        val timeDiffForUpdateInMillis = 60000L
+        val timeDiffForUpdateInMillis = Consts.Network.timeDiffForUpdateInMillis
         val currentTime = Date().time
         Log.d("meow", "saved time: $lastVisitTime")
         Log.d("meow", "current time: $currentTime")
