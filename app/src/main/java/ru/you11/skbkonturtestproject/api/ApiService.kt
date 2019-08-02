@@ -23,10 +23,10 @@ class ApiService(private val apiMethods: ApiMethods): IApiService {
                 CallResult(response.code().toString())
             }
         } catch (e: Exception) {
-            CallResult("unknown error")
+            CallResult("Ошибка соединения")
         }
     }
 
-    private fun <T>getEmptyBodyError(): CallResult<T> = CallResult("empty body")
+    private fun <T>getEmptyBodyError(): CallResult<T> = CallResult("Ошибка соединения")
 
 }

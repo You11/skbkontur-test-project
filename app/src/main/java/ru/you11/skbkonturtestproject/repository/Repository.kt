@@ -14,10 +14,10 @@ class Repository(private val contactDao: ContactDao) {
 
     private val apiService = ApiService(RetrofitFactory().create().create(ApiMethods::class.java))
 
-    fun getContacts(isCached: Boolean): CallResult<List<Contact>> {
 
-        if (isCached) {
-            return CallResult(DbContact.convertToContacts(contactDao.getAllContacts()))
+    fun getContacts(getCached: Boolean): CallResult<List<Contact>> {
+        if (getCached) {
+            return getCachedContacts()
         }
 
         val apiContacts = ArrayList<ApiContact>()
@@ -37,5 +37,9 @@ class Repository(private val contactDao: ContactDao) {
 
     fun saveContactsToCache(contacts: List<Contact>) {
         contactDao.insertAllContacts(Contact.convertToDbPersonList(contacts))
+    }
+
+    private fun getCachedContacts(): CallResult<List<Contact>> {
+        return CallResult(DbContact.convertToContacts(contactDao.getAllContacts()))
     }
 }

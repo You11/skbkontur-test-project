@@ -1,7 +1,6 @@
 package ru.you11.skbkonturtestproject.main.contacts
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.launch
 import ru.you11.skbkonturtestproject.main.LoadingStatus
@@ -40,7 +39,7 @@ class ContactsViewModel(application: Application) : BaseViewModel(application) {
 
     private fun setNewData() {
         loadingStatus.postValue(LoadingStatus.LOADING)
-        val data = repository.getContacts(isCached = false)
+        val data = repository.getContacts(getCached = false)
         if (data.isSuccess) {
             launch {
                 repository.saveContactsToCache(data.data)
@@ -57,7 +56,7 @@ class ContactsViewModel(application: Application) : BaseViewModel(application) {
 
     private fun setCachedData() {
         launch {
-            val cachedData = repository.getContacts(isCached = true)
+            val cachedData = repository.getContacts(getCached = true)
             if (cachedData.data.isNotEmpty()) {
                 loadingStatus.postValue(LoadingStatus.FINISHED)
                 contacts.postValue(cachedData.data)
