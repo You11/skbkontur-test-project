@@ -29,10 +29,11 @@ class ContactsFragment : BaseFragment<ContactsViewModel>(), OnContactClickListen
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        if (isUpdateNeeded()) {
+        val lastUpdateTime = getLastUpdateDatetime()
+        if (lastUpdateTime == null) {
             viewModel.updateData()
         } else {
-            viewModel.setCachedData()
+            viewModel.updateData(lastUpdateTime)
         }
     }
 
@@ -194,13 +195,6 @@ class ContactsFragment : BaseFragment<ContactsViewModel>(), OnContactClickListen
         val prefs = activity?.getSharedPreferences(Consts.Prefs.contactsPrefs, Context.MODE_PRIVATE)
         val lastUpdateTime = prefs?.getLong(Consts.Prefs.contactsPrefsLastUpdate, 0)
         return if (lastUpdateTime == 0L) null else lastUpdateTime
-    }
-
-    private fun isUpdateNeeded(): Boolean {
-        val lastVisitTime = getLastUpdateDatetime() ?: return true
-        val timeDiffForUpdateInMillis = Consts.Network.timeDiffForUpdateInMillis
-        val currentTime = Date().time
-        return (lastVisitTime + timeDiffForUpdateInMillis) < currentTime
     }
 
     private fun setOnlyThisViewVisible(view: View) {

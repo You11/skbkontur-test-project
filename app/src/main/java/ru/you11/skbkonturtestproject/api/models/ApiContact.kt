@@ -25,10 +25,6 @@ class ApiContact {
             return apiContacts.map { convertToPerson(it) }
         }
 
-        fun convertToDbPersonList(apiContacts: List<ApiContact>): List<DbContact> {
-            return apiContacts.map { convertToDbPerson(it) }
-        }
-
         private fun convertToPerson(apiContact: ApiContact): Contact {
             return Contact(
                 id = apiContact.id ?: "",
@@ -38,19 +34,6 @@ class ApiContact {
                 biography = apiContact.biography ?: "",
                 temperament = Temperament.valueOf(apiContact.temperament?.toUpperCase() ?: Temperament.UNKNOWN.name),
                 educationPeriod = convertToEducationPeriod(apiContact.educationPeriod ?: ApiEducationPeriod())
-            )
-        }
-
-        private fun convertToDbPerson(apiContact: ApiContact): DbContact {
-            return DbContact(
-                id = apiContact.id ?: "",
-                name = apiContact.name ?: "",
-                phone = apiContact.phone ?: "",
-                height = apiContact.height ?: 0.0f,
-                biography = apiContact.biography ?: "",
-                temperament = Temperament.valueOf(apiContact.temperament?.toUpperCase() ?: Temperament.UNKNOWN.name),
-                startDate = apiContact.educationPeriod?.start ?: Date(),
-                endDate = apiContact.educationPeriod?.end ?: Date()
             )
         }
 

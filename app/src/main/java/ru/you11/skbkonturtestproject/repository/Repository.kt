@@ -6,7 +6,6 @@ import ru.you11.skbkonturtestproject.api.CallResult
 import ru.you11.skbkonturtestproject.api.RetrofitFactory
 import ru.you11.skbkonturtestproject.api.models.ApiContact
 import ru.you11.skbkonturtestproject.db.ContactDao
-import ru.you11.skbkonturtestproject.db.ContactDatabase
 import ru.you11.skbkonturtestproject.db.DbContact
 import ru.you11.skbkonturtestproject.models.Contact
 import ru.you11.skbkonturtestproject.other.Consts
@@ -15,11 +14,11 @@ class Repository(private val contactDao: ContactDao) {
 
     private val apiService = ApiService(RetrofitFactory().create().create(ApiMethods::class.java))
 
-    fun getContactsFromCache(): List<Contact> {
-        return DbContact.convertToContacts(contactDao.getAllContacts())
-    }
+    fun getContacts(isCached: Boolean): CallResult<List<Contact>> {
 
-    fun getContacts(): CallResult<List<Contact>> {
+        if (isCached) {
+            return CallResult(DbContact.convertToContacts(contactDao.getAllContacts()))
+        }
 
         val apiContacts = ArrayList<ApiContact>()
 
@@ -31,14 +30,12 @@ class Repository(private val contactDao: ContactDao) {
             apiContacts.addAll(result.data)
         }
 
-        saveContactsToCache(apiContacts)
-
         val contacts = ArrayList(ApiContact.convertToPersonList(apiContacts))
 
         return CallResult(contacts)
     }
 
-    private fun saveContactsToCache(contacts: List<ApiContact>) {
-        contactDao.insertAllContacts(ApiContact.convertToDbPersonList(contacts).take(Consts.Database.savedElementsCount))
+    fun saveContactsToCache(contacts: List<Contact>) {
+        contactDao.insertAllContacts(Contact.convertToDbPersonList(contacts))
     }
 }

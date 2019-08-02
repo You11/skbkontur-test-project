@@ -7,6 +7,8 @@ import kotlinx.coroutines.launch
 import ru.you11.skbkonturtestproject.main.LoadingStatus
 import ru.you11.skbkonturtestproject.main.base.BaseViewModel
 import ru.you11.skbkonturtestproject.models.Contact
+import ru.you11.skbkonturtestproject.other.Consts
+import java.util.*
 
 class ContactsViewModel(application: Application) : BaseViewModel(application) {
 
@@ -16,27 +18,16 @@ class ContactsViewModel(application: Application) : BaseViewModel(application) {
 
     fun updateData() {
         launch {
-            loadingStatus.postValue(LoadingStatus.LOADING)
-            val data = repository.getContacts()
-            if (data.isSuccess) {
-                loadingStatus.postValue(LoadingStatus.FINISHED)
-                error.postValue("")
-                contacts.postValue(data.data)
-            } else {
-                loadingStatus.postValue(LoadingStatus.ERROR)
-                error.postValue(data.error)
-            }
+            setNewData()
         }
     }
 
-    fun setCachedData() {
+    fun updateData(lastUpdateTimeInMillis: Long) {
         launch {
-            val cachedData = repository.getContactsFromCache()
-            if (cachedData.isNotEmpty()) {
-                loadingStatus.postValue(LoadingStatus.FINISHED)
-                contacts.postValue(cachedData)
+            if (isUpdateNeeded(lastUpdateTimeInMillis)) {
+                setNewData()
             } else {
-                loadingStatus.postValue(LoadingStatus.ERROR)
+                setCachedData()
             }
         }
     }
@@ -46,4 +37,43 @@ class ContactsViewModel(application: Application) : BaseViewModel(application) {
     }
 
     fun isDataEmpty() = contacts.value?.isEmpty() ?: true
+
+    private fun setNewData() {
+        loadingStatus.postValue(LoadingStatus.LOADING)
+        val data = repository.getContacts(isCached = false)
+        if (data.isSuccess) {
+            launch {
+                repository.saveContactsToCache(data.data)
+            }
+
+            clearError()
+            loadingStatus.postValue(LoadingStatus.FINISHED)
+            contacts.postValue(data.data)
+        } else {
+            loadingStatus.postValue(LoadingStatus.ERROR)
+            error.postValue(data.error)
+        }
+    }
+
+    private fun setCachedData() {
+        launch {
+            val cachedData = repository.getContacts(isCached = true)
+            if (cachedData.data.isNotEmpty()) {
+                loadingStatus.postValue(LoadingStatus.FINISHED)
+                contacts.postValue(cachedData.data)
+            } else {
+                loadingStatus.postValue(LoadingStatus.ERROR)
+            }
+        }
+    }
+
+    private fun isUpdateNeeded(lastUpdateTimeInMillis: Long): Boolean {
+        val timeDiffForUpdateInMillis = Consts.Network.timeDiffForUpdateInMillis
+        val currentTime = Date().time
+        return (lastUpdateTimeInMillis + timeDiffForUpdateInMillis) < currentTime
+    }
+
+    private fun clearError() {
+        error.postValue("")
+    }
 }
