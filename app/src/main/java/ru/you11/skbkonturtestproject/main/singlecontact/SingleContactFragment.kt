@@ -26,6 +26,7 @@ class SingleContactFragment : BaseFragment<SingleContactViewModel>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        enableHomeButton()
 
         viewModel.setContactData(args.contact)
         viewModel.contact.observe(this, Observer {
