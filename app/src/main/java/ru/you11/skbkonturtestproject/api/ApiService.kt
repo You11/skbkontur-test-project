@@ -1,9 +1,17 @@
 package ru.you11.skbkonturtestproject.api
 
+import android.content.Context
+import android.net.ConnectivityManager
 import retrofit2.Call
 import ru.you11.skbkonturtestproject.api.models.ApiContact
+import ru.you11.skbkonturtestproject.main.App
+import android.net.NetworkInfo
+import ru.you11.skbkonturtestproject.R
+
 
 class ApiService(private val apiMethods: ApiMethods): IApiService {
+
+    private val resources = App.instance.resources
 
     override fun getAllContacts(filename: String): CallResult<List<ApiContact>> {
         return getApiResponse(apiMethods.getContacts(filename))
@@ -20,13 +28,28 @@ class ApiService(private val apiMethods: ApiMethods): IApiService {
                     getEmptyBodyError()
                 }
             } else {
-                CallResult(response.code().toString())
+                CallResult(getErrorMessageBasedOnCode(response.code()))
             }
         } catch (e: Exception) {
-            CallResult("Ошибка соединения")
+            if (!isConnectedToInternet())
+                return CallResult(resources.getString(R.string.not_connected_error))
+
+            return CallResult(resources.getString(R.string.general_error))
         }
     }
 
-    private fun <T>getEmptyBodyError(): CallResult<T> = CallResult("Ошибка соединения")
+    private fun getErrorMessageBasedOnCode(code: Int): String {
+        return when (code) {
+            in 500..600 -> resources.getString(R.string.server_error)
+            403 -> resources.getString(R.string.forbidden_error)
+            else -> code.toString()
+        }
+    }
 
+    private fun <T>getEmptyBodyError(): CallResult<T> = CallResult(resources.getString(R.string.general_error))
+
+    private fun isConnectedToInternet(): Boolean {
+        val cm = App.instance.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        return cm.activeNetworkInfo?.isConnected ?: false
+    }
 }

@@ -6,4 +6,9 @@
     <string name="two_dates">%1$s - %2$s</string>
     <string name="empty_message">Контакты не найдены</string>
     <string name="error_message">Ошибка при загрузке контактов</string>
+
+    <string name="general_error">Ошибка соединения</string>
+    <string name="server_error">Ошибка сервера</string>
+    <string name="not_connected_error">Отсутствует подключение к сети</string>
+    <string name="forbidden_error">Запрещен доступ к информации</string>
 </resources>
